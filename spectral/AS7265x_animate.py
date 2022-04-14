@@ -34,6 +34,7 @@ channels = np.array([\
 860 # W
 ])
 
+# calibration values, SUBJECT TO CHANGE 
 raw_calib = "7100.14,2114.55,4546.03,573.03,2670.97,3540.5,1006.1,913.37,2576.33,242.4,753.3,263.96,194.1,145.33,476.14,856.81,364.94,158.52"
 # This function is from https://www.noah.org/wiki/Wavelength_to_RGB_in_Python
 def wavelength_to_rgb(wavelength, gamma=0.8):
