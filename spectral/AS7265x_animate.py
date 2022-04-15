@@ -9,9 +9,9 @@ from datetime import datetime
 import time
 
 # IMPORTANT!!! Replace with the serial port the arduino is plugged into
-ser = serial.Serial('/dev/cu.usbmodem141301',115200)
+ser = serial.Serial('COM12',115200)
 logfile = 'log.txt'
-figdir = 'tst' # folder to save figures
+figdir = 'science/spectral/images' # folder to save figures
 
 channels = np.array([\
 410, # A
@@ -35,7 +35,7 @@ channels = np.array([\
 ])
 
 # calibration values, SUBJECT TO CHANGE 
-raw_calib = "7100.14,2114.55,4546.03,573.03,2670.97,3540.5,1006.1,913.37,2576.33,242.4,753.3,263.96,194.1,145.33,476.14,856.81,364.94,158.52"
+raw_calib = "3495.30,1061.12,1924.57,690.48,929.63,1123.68,478.35,495.40,1473.11,249.47,362.42,71.99,99.08,77.44,226.75,477.91,148.85,80.99"
 # This function is from https://www.noah.org/wiki/Wavelength_to_RGB_in_Python
 def wavelength_to_rgb(wavelength, gamma=0.8):
 
@@ -108,7 +108,7 @@ def on_press(key):
         space_pressed+=1
 
 def calibrate(measurements):
-    calibration = np.array(raw_calib.split(',').copy()).astype(np.float)
+    calibration = np.array(raw_calib.split(',').copy()).astype(float)
     # import pdb; pdb.set_trace()
     return measurements/calibration
 
@@ -119,7 +119,7 @@ def animate(i):
         ser_str = ser.readline().decode().rstrip()
         ser_lst = ser_str.split(',')
         ser_lst = ser_lst[:-1]
-        measurements = np.array(ser_lst.copy()).astype(np.float)
+        measurements = np.array(ser_lst.copy()).astype(float)
         with open('out.txt', 'a') as f:
             for item in measurements:
                 f.write("%s," % item)

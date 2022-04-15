@@ -3,30 +3,30 @@ from scipy.interpolate import Rbf
 import matplotlib.pyplot as plt
 
 # https://learn.sparkfun.com/tutorials/spectral-triad-as7265x-hookup-guide
-channels = np.array([\
-410, # A
-435, # B
-460, # C
-485, # D
-510, # E
-535, # F
-560, # G
-585, # H
-645, # I
-705, # J
-900, # K
-940, # L
-610, # R
-680, # S
-730, # T
-760, # U
-810, # V
-860 # W
+channels = np.array([
+    410,  # A
+    435,  # B
+    460,  # C
+    485,  # D
+    510,  # E
+    535,  # F
+    560,  # G
+    585,  # H
+    645,  # I
+    705,  # J
+    900,  # K
+    940,  # L
+    610,  # R
+    680,  # S
+    730,  # T
+    760,  # U
+    810,  # V
+    860  # W
 ])
 
-measurements = np.array([\
-38.90,42.00,1.93,51.20,65.59,7.51,58.34,100.62,5074.35,9.59,100.68,16.34,2451.20,40.93,36.35,27.32,176.83,259.36\
-]) # red LED
+measurements = np.array([
+    38.90, 42.00, 1.93, 51.20, 65.59, 7.51, 58.34, 100.62, 5074.35, 9.59, 100.68, 16.34, 2451.20, 40.93, 36.35, 27.32, 176.83, 259.36
+])  # red LED
 
 # measurements = np.array([\
 # 23.94,209.08,32.88,920.66,98.78,1.50,10.15,9.91,9.46,0.42,1.25,0.96,5.02,0.00,1.86,0.91,3.66,1.22\
@@ -45,16 +45,15 @@ measurements = np.array([\
 # ]) # IR LED
 
 # Sort data in the order of increasing wavelengths
-data = np.hstack((channels[:,np.newaxis],measurements[:,np.newaxis]))
-data=data[data[:,0].argsort()]
+data = np.hstack((channels[:, np.newaxis], measurements[:, np.newaxis]))
+data = data[data[:, 0].argsort()]
 
-wl = data[:,0].astype(float) # wavelengths
-A = data[:,1].astype(float)  # amplitudes
+wl = data[:, 0].astype(float)  # wavelengths
+A = data[:, 1].astype(float)  # amplitudes
 
 
 # This function is from https://www.noah.org/wiki/Wavelength_to_RGB_in_Python
 def wavelength_to_rgb(wavelength, gamma=0.8):
-
     '''This converts a given wavelength of light to an 
     approximate RGB color value. The wavelength must be given
     in nanometers in the range from 380 nm through 750 nm
@@ -100,31 +99,34 @@ def wavelength_to_rgb(wavelength, gamma=0.8):
 
 
 # https://cdn.sparkfun.com/assets/learn_tutorials/8/3/0/AS7265x_Datasheet.pdf
-FWHM=20 
+FWHM = 20
 
-#https://en.wikipedia.org/wiki/Full_width_at_half_maximum
-sig=FWHM/(2*np.sqrt(2*np.log(2))) 
+# https://en.wikipedia.org/wiki/Full_width_at_half_maximum
+sig = FWHM/(2*np.sqrt(2*np.log(2)))
 
 # Gaussian function
-def g(x,mu):
+
+
+def g(x, mu):
     return np.exp(-(x-mu)**2/(2*sig**2))
 
 # Interpolate the measurements using radial basis functions
 
+
 f = Rbf(wl, A, function='multiquadric', epsilon=np.sqrt(2.0)*sig)
 
-x = np.linspace(350,1000,10000)
+x = np.linspace(350, 1000, 10000)
 y = f(x)
 
-y = np.where(y<0, 0.0*y, y)
-y = np.where(x <= wl[0], A[0]*g(x,wl[0]), y)
-y = np.where(x > wl[-1], A[-1]*g(x,wl[-1]), y)
+y = np.where(y < 0, 0.0*y, y)
+y = np.where(x <= wl[0], A[0]*g(x, wl[0]), y)
+y = np.where(x > wl[-1], A[-1]*g(x, wl[-1]), y)
 
 # Plot the spectrum
 
-colors=[wavelength_to_rgb(wx) for wx in x]
+colors = [wavelength_to_rgb(wx) for wx in x]
 
-plt.scatter(x,y, color=colors,s=1)
+plt.scatter(x, y, color=colors, s=1)
 plt.grid()
 # plt.savefig('AS7265x_RED.png', format='png', dpi=150)
 plt.xticks(wl)
