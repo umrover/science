@@ -1,5 +1,3 @@
-from fileinput import filename
-from re import X
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -15,49 +13,50 @@ def main():
         return
 
     # https://learn.sparkfun.com/tutorials/spectral-triad-as7265x-hookup-guide
-    channels = np.array([
-        410,  # A
-        435,  # B
-        460,  # C
-        485,  # D
-        510,  # E
-        535,  # F
-        560,  # G
-        585,  # H
-        645,  # I
-        705,  # J
-        900,  # K
-        940,  # L
-        610,  # R
-        680,  # S
-        730,  # T
-        760,  # U
-        810,  # V
-        860   # W
-    ])
+    channels = {
+        'A': 410,
+        'B': 435,
+        'C': 460,
+        'D': 485,
+        'E': 510,
+        'F': 535,
+        'G': 560,
+        'H': 585,
+        'I': 645,
+        'J': 705,
+        'K': 900,
+        'L': 940,
+        'R': 610,
+        'S': 680,
+        'T': 730,
+        'U': 760,
+        'V': 810,
+        'W': 860
+    }
 
     for sample_num in range(1, len(sys.argv)):
         file_name = sys.argv[sample_num]
 
         if not file_name.endswith('.csv'):
-            print("Error: Filenames must all end in '.csv'")
+            print(f"Error: {file_name} does not end in '.csv'.")
             return
 
-        file_name = file_name[:-4]
+        sample_name = file_name[:-4]
 
         df = pd.read_csv(sys.argv[sample_num])
 
-        mu = df.mean()
-        mu.index = channels
+        wavelengths = []
+        intensities = []
+        for _, row in df.iterrows():
+            for key, val in row.iteritems():
 
-        sigma = df.std()
-        sigma.index = channels
-        print(sigma)
+                wavelengths.append(channels[key.strip()])
+                intensities.append(val)
 
-        # TODO: Figure out how to make Confidence Interval based on sigma
+        parsed_data = pd.DataFrame({'Wavelength': wavelengths, 'Intensity': intensities})
 
-        sns.lineplot(data=mu, ci=2)
-        plt.savefig(file_name + '.png')
+        sns.lineplot(x='Wavelength', y='Intensity', data=parsed_data)
+        plt.savefig(sample_name + '.png')
 
         # TODO: Create csv with usable data
 
