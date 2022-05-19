@@ -8,20 +8,24 @@ exports.create = (req, res) => {
         res.status(400).send({message: "Must include rock name!"});
         return;
     }
-    if (!req.body.type) {
-        res.status(400).send({message: "Must include rock type!"});
+    if (!req.body.classification) {
+        res.status(400).send({message: "Must include rock classification!"});
         return;
     }
     if (!req.body.color) {
         res.status(400).send({message: "Must include rock color in array format!"});
         return;
     }
+    if (!req.body.texture) {
+        res.status(400).send({message: "Must include rock texture in array format!"});
+        return;
+    }
     if (!req.body.material) {
         res.status(400).send({message: "Must include rock material in array format!"});
         return;
     }
-    if (!req.body.formation) {
-        res.status(400).send({message: "Must include rock formation!"});
+    if (!req.body.environment) {
+        res.status(400).send({message: "Must include rock environment!"});
         return;
     }
 
@@ -33,10 +37,10 @@ exports.create = (req, res) => {
     // Create a Rock object
     const rock = new Rock({
         rock_name: req.body.rock_name,
-        type: req.body.type,
+        classification: req.body.classification,
         color: req.body.color,
         material: req.body.material,
-        formation: req.body.formation,
+        environment: req.body.environment,
         notes: rock_notes
     });
 
@@ -56,11 +60,23 @@ exports.create = (req, res) => {
 exports.findFiltered = (req, res) => {
     let condition = {}
 
-    if (req.body.rock_name) {]
+    if (req.body.rock_name) {
         condition["rock_name"] = { $regex: new RegExp(req.body.rock_name), $options: "i" };
     }
-    if (req.body.type) {
-        condition["type"] = { $regex: new RegExp(req.body.type), $options: "i" };
+    if (req.body.classification) {
+        condition["classification"] = { $regex: new RegExp(req.body.classification), $options: "i" };
+    }
+    if (req.body.color) {
+        condition["color"] = { $regex: new RegExp(req.body.color), $options: "i" };
+    }
+    if (req.body.texture) {
+        condition["texture"] = { $regex: new RegExp(req.body.texture), $options: "i" };
+    }
+    if (req.body.material) {
+        condition["material"] = { $regex: new RegExp(req.body.material), $options: "i" };
+    }
+    if (req.body.environment) {
+        condition["environment"] = { $regex: new RegExp(req.body.environment), $options: "i" };
     }
 
     Rock.find(condition)

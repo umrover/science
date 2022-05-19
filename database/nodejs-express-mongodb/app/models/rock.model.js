@@ -4,10 +4,11 @@ module.exports = mongoose => {
         mongoose.Schema(
             {
                 rock_name: String,
-                type: String,
+                classification: String,
                 color: Array,
+                texture: Array,
                 material: Array,
-                formation: String,
+                environment: String,
                 notes: String
             },
             { timestamps: false }
