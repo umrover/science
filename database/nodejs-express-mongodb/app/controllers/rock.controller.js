@@ -56,11 +56,11 @@ exports.create = (req, res) => {
 exports.findFiltered = (req, res) => {
     let condition = {}
 
-    if (req.query.rock_name) {
-        condition[rock_name] = { $regex: new RegExp(req.query.rock_name), $options: "i" }
+    if (req.body.rock_name) {]
+        condition["rock_name"] = { $regex: new RegExp(req.body.rock_name), $options: "i" };
     }
-    if (req.query.type) {
-        condition[type] = { $regex: new RegExp(req.query.type), $options: "i" }
+    if (req.body.type) {
+        condition["type"] = { $regex: new RegExp(req.body.type), $options: "i" };
     }
 
     Rock.find(condition)
